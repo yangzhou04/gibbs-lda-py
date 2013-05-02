@@ -7,8 +7,6 @@ Created on 2013-1-3
 
 import random
 import pprint
-from util import zeros
-
 
 class GibbsLDA:
 	'''Gibbs sampler for estimating the best assignments of topics for
@@ -60,8 +58,7 @@ class GibbsLDA:
 
 
 	def __init_state(self):
-		'''Initialisation: Many alternatives are possible, I chose to 
-		perform random assignments with equal probabilities
+		'''Initialisation: Random assignments with equal probabilities
 		'''
 		## initialise count variables.
 		# number of word i assigned to topic j
@@ -191,7 +188,6 @@ class GibbsLDA:
 			# get statistics after burn-in
 			if i > self.BURN_IN and i%self.SAMPLE_LAG == 0:
 				self.__update_params()
-
 
 		# nornalize theta and phi
 		assert self.SAMPLE_LAG  > 0
