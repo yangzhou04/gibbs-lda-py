@@ -19,6 +19,7 @@ class GibbsLDA:
 			THIN_INTERVAL=100, SAMPLE_LAG=10):
 		'''Configure the LDA model and Gibbs sampler.
 		'''
+		## Config the parameters of lda
 		# topic number
 		self.K = topic_num
 		# dirichlet parameter of doc-topic
@@ -26,7 +27,7 @@ class GibbsLDA:
 		# dirichlet parameter of topic-word
 		self.beta = beta
 		
-		### Configure the arguments gibbs sampler usess
+		## Config the arguments gibbs sampler usess
 		# max iterations
 		self.ITERATIONS = ITERATIONS
 		# burn in period
