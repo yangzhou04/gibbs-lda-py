@@ -1,4 +1,6 @@
 *.py[cod]
+# pycharm files
+.idea/
 
 # C extensions
 *.so
