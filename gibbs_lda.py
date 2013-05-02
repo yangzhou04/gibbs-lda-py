@@ -17,7 +17,7 @@ class GibbsLDA:
 	'''
 	def __init__(self, topic_num=2, alpha=5, beta=0.5, ITERATIONS=10000, BURN_IN=2000, 
 			THIN_INTERVAL=100, SAMPLE_LAG=10):
-		'''Configure the LDA model and Gibbs sampler.
+		'''Config the LDA model and Gibbs sampler.
 		'''
 		## Config the parameters of lda
 		# topic number
