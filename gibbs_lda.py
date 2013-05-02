@@ -11,28 +11,14 @@ from util import zeros
 
 
 class GibbsLDA:
-	'''
-	Gibbs sampler for estimating the best assignments of topics for
+	'''Gibbs sampler for estimating the best assignments of topics for
 	words and documents in a corpus. The algorithm is introduced in
 	Tom Griffiths' paper "Gibbs sampling in the generative model of 
 	Latent Dirichlet Allocation" (2002).
 	'''
-	def __init__(self, documents, V=None):
-		'''
-		Initialize the gibbs sampler with data
-		'''
-		# document data (term lists)
-		self.documents = documents
-		# vocabulary size
-		if V is None:
-			self.V = max(max(documents)) + 1
-		# document number
-		self.M = len(documents)
-
-
-	def config_model(self, topic_num=2, alpha=5, beta=0.5):
-		'''
-		Configure the LDA model.
+	def __init__(self, topic_num=2, alpha=5, beta=0.5, ITERATIONS=10000, BURN_IN=2000, 
+			THIN_INTERVAL=100, SAMPLE_LAG=10):
+		'''Configure the LDA model and Gibbs sampler.
 		'''
 		# topic number
 		self.K = topic_num
@@ -40,15 +26,8 @@ class GibbsLDA:
 		self.alpha = alpha
 		# dirichlet parameter of topic-word
 		self.beta = beta
-
-
-
-
-	def config_sampler(self, ITERATIONS = 10000, BURN_IN = 2000, 
-			THIN_INTERVAL = 100, SAMPLE_LAG = 10):
-		'''
-		Configure the arguments gibbs sampler usess
-		'''
+		
+		### Configure the arguments gibbs sampler usess
 		# max iterations
 		self.ITERATIONS = ITERATIONS
 		# burn in period
@@ -60,9 +39,28 @@ class GibbsLDA:
 		self.SAMPLE_LAG = SAMPLE_LAG
 
 
-	def __init_state(self):
+	def fit(self, documents, V=None):
+		'''Fit the data
 		'''
-		Initialisation: Many alternatives are possible, I chose to 
+		# document data (term lists)
+		self.documents = documents
+		# vocabulary size
+		if V is None:
+			self.V = max(max(documents)) + 1
+		# document number
+		self.M = len(documents)
+		
+		self.__estimate()
+		
+
+	def predict(self, documents, V=None):
+		'''Predict the data
+		'''
+		pass
+
+
+	def __init_state(self):
+		'''Initialisation: Many alternatives are possible, I chose to 
 		perform random assignments with equal probabilities
 		'''
 		## initialise count variables.
@@ -90,8 +88,6 @@ class GibbsLDA:
 				self.nd[m][topic] += 1
 				self.nwsum[topic] += 1
 			self.ndsum[m] = N
-
-		
 
 		## 
 		if self.SAMPLE_LAG > 0:
@@ -122,8 +118,7 @@ class GibbsLDA:
 
 
 	def __update_params(self):
-		'''
-		Update the parameters of LDA model
+		'''Update the parameters of LDA model
 		'''
 		for m in range(self.M):
 			for k in range(self.K):
@@ -141,8 +136,7 @@ class GibbsLDA:
 		self.numstats += 1
 
 	def __sampling(self, m, n):
-		'''
-		Samping from full probability distribution
+		'''Samping from full probability distribution
 		'''
 		# remove z_i from the count variables
 		#import pdb; pdb.set_trace()
@@ -177,9 +171,8 @@ class GibbsLDA:
 		return topic
 
 
-	def estimate(self):
-		'''
-		Start estimating gibbs sampling 
+	def __estimate(self):
+		'''Start estimating gibbs sampling 
 		'''
 		print "Sampling %d iterations with burn-in of %d (B/S=%d)" \
 				% (self.ITERATIONS, self.BURN_IN, self.THIN_INTERVAL)
@@ -224,20 +217,19 @@ class GibbsLDA:
 					self.phi[k][w] = self.phisum[k][w] / self.numstats
 
 	def usage(self):
-		'''
+		'''Print the usage information
 		'''
 		pass
 
-
-
 if __name__ == '__main__':
 	# words in documents
-	documents = [ [1, 4, 3, 2, 3, 1, 4, 3, 2, 3, 1, 4, 3, 2, 3, 6],
+	documents = [ 
+			[1, 4, 3, 2, 3, 1, 4, 3, 2, 3, 1, 4, 3, 2, 3, 6],
 			[2, 2, 4, 2, 4, 2, 2, 2, 2, 4, 2, 2],
 			[1, 6, 5, 6, 0, 1, 6, 5, 6, 0, 1, 6, 5, 6, 0, 0],
 			[5, 6, 6, 2, 3, 3, 6, 5, 6, 2, 2, 6, 5, 6, 6, 6, 0],
 			[2, 2, 4, 4, 4, 4, 1, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 0],
-			[5, 4, 2, 3, 4, 5, 6, 6, 5, 4, 3, 2]]
+			[5, 4, 2, 3, 4, 5, 6, 6, 5, 4, 3, 2],]
 
 	# topics num.
 	K = 2
@@ -247,9 +239,7 @@ if __name__ == '__main__':
 
 	print 'Latent Dirichlet Allocation using Gibbs Sampling.'
 
-	lda = GibbsLDA(documents)
-	lda.config_sampler(ITERATIONS=100000, BURN_IN=2000, 
-			THIN_INTERVAL=100, SAMPLE_LAG=10)
-	lda.config_model(topic_num=K, alpha=alpha, beta=beta)
-	lda.estimate()
+	lda = GibbsLDA(topic_num=K, alpha=alpha, beta=beta, ITERATIONS=100000,\
+			 BURN_IN=2000, THIN_INTERVAL=100, SAMPLE_LAG=10)
+	lda.fit(documents)
 
