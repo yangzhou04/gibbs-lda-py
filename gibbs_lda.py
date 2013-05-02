@@ -7,6 +7,7 @@ Created on 2013-1-3
 
 import random
 import pprint
+from util import zeros
 
 class GibbsLDA:
 	'''Gibbs sampler for estimating the best assignments of topics for

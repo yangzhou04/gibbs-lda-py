@@ -24,11 +24,6 @@ class switch(object):
             return False
 
 
-
-def isdigit_x(target):
-    pass
-
-
 def zeros(row_num, col_num):
     '''
     Return a zero initialized two dimensional list with row_num and 
